@@ -19,6 +19,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
+//Nuevo agregado
+app.get("/", (req, res) => {
+  res.json({
+    status: "OK",
+    service: "Vehicle WebSocket Backend",
+    time: new Date().toISOString()
+  });
+});
+
 // ================= INIT STORAGE =================
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify([]));
