@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Test WebSocket</title>
+</head>
+<body>
+  <h2>WebSocket Test</h2>
+  <pre id="log"></pre>
+
+  <script>
+    const log = msg => {
+      document.getElementById("log").textContent += msg + "\n";
+    };
+
+    const ws = new WebSocket("ws://localhost:3000");
+
+    ws.onopen = () => log("🟢 WebSocket conectado");
+    ws.onmessage = e => log("📡 " + e.data);
+    ws.onerror = e => log("❌ Error WebSocket");
+    ws.onclose = () => log("🔴 WebSocket cerrado");
+  </script>
+</body>
+</html>

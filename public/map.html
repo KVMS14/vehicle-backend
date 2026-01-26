@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seguimiento en Tiempo Real</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+
+    .status {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      z-index: 1000;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="status" class="status">⏳ Esperando datos GPS...</div>
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // ================= MAPA =================
+    const map = L.map("map").setView([0, 0], 2);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap"
+    }).addTo(map);
+
+    let marker = null;
+    let routeLine = L.polyline([], { color: "red", weight: 4 }).addTo(map);
+
+    const status = document.getElementById("status");
+
+    // ================= WEBSOCKET =================
+    const ws = new WebSocket("ws://localhost:3000");
+    // const ws = new WebSocket("ws://192.168.1.69:3000");
+    
+
+    ws.onopen = () => {
+      console.log("🟢 WebSocket conectado");
+    };
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const { lat, lon } = data;
+
+      console.log("📡 Punto recibido:", lat, lon);
+
+      status.innerText =
+        `📍 GPS activo\n${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+
+      const point = [lat, lon];
+
+      if (!marker) {
+        marker = L.marker(point).addTo(map);
+        map.setView(point, 17);
+      } else {
+        marker.setLatLng(point);
+      }
+
+      routeLine.addLatLng(point);
+    };
+
+    ws.onclose = () => {
+      status.innerText = "🔴 WebSocket desconectado";
+    };
+
+    ws.onerror = (err) => {
+      console.error("❌ WebSocket error", err);
+    };
+  </script>
+
+</body>
+</html>
