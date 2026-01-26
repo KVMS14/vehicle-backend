@@ -109,5 +109,6 @@ app.post("/gps", (req, res) => {
 
 // ================= START =================
 server.listen(PORT, () => {
-  console.log(`🚀 WebSocket backend activo en http://localhost:${PORT}`);
+  // console.log(`🚀 WebSocket backend activo en http://localhost:${PORT}`);
+  console.log(`🚀 WebSocket backend activo en puerto ${PORT}`);
 });
