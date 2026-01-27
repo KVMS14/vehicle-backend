@@ -3,6 +3,7 @@ import http from "http";
 import { WebSocketServer } from "ws";
 import fs from "fs";
 import cors from "cors";
+import mongoose from "mongoose";
 
 const app = express();
 const server = http.createServer(app);
@@ -11,6 +12,15 @@ const wss = new WebSocketServer({ server });
 // const PORT = 3000;
 const PORT = process.env.PORT || 3000;
 const DATA_FILE = "./data.json";
+
+//MONGODB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log("🟢 MongoDB conectado");
+  })
+  .catch(err => {
+    console.error("🔴 Error MongoDB:", err.message);
+  });
 
 // Importante
 let activeRoute = null;
