@@ -11,6 +11,10 @@ const RouteSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  date: {
+    type: String, // YYYY-MM-DD (hora local GMT-5)
+    required: true
+  },
   startTime: Number,
   endTime: Number,
   active: Boolean,
@@ -18,4 +22,3 @@ const RouteSchema = new mongoose.Schema({
 });
 
 export default mongoose.model("Route", RouteSchema);
-

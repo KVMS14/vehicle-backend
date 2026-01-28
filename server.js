@@ -83,8 +83,17 @@ app.post("/route/start", async (req, res) => {
     return res.json({ message: "Ruta ya activa" });
   }
 
+  const now = new Date();
+
+
+  now.setHours(now.getHours() -5);
+
+  const dateStr = now.toISOString().slice(0, 10);
+
+
   activeRoute = new Route({
     deviceId,
+    date: dateStr,
     startTime: Date.now(),
     active: true,
     points: []
@@ -201,18 +210,20 @@ app.post("/route/stop", async (req, res) => {
 app.get("/routes/by-date/:date", async (req, res) => {
   const date = req.params.date; // YYYY-MM-DD
 
-  const start = new Date(date);
-  const end = new Date(date);
-  end.setDate(end.getDate() + 1);
+  //const start = new Date(date);
+  //const end = new Date(date);
+  //end.setDate(end.getDate() + 1);
 
-  const routes = await Route.find({
-    startTime: {
-      $gte: start.getTime(),
-      $lt: end.getTime()
-    }
-  });
+  //const routes = await Route.find({
+    //startTime: {
+      //$gte: start.getTime(),
+      //$lt: end.getTime()
+    //}
+  //});
 
-  res.json(routes);
+  const routes = await Route.find({ date }); 
+
+   res.json(routes);
 });
 
 
