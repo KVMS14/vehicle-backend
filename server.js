@@ -197,6 +197,24 @@ app.post("/route/stop", async (req, res) => {
   });
 });
 
+// ================= HISTORIAL =============
+app.get("/routes/by-date/:date", async (req, res) => {
+  const date = req.params.date; // YYYY-MM-DD
+
+  const start = new Date(date);
+  const end = new Date(date);
+  end.setDate(end.getDate() + 1);
+
+  const routes = await Route.find({
+    startTime: {
+      $gte: start.getTime(),
+      $lt: end.getTime()
+    }
+  });
+
+  res.json(routes);
+});
+
 
 // ================= START =================
 server.listen(PORT, () => {
